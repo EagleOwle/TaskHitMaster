@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthHandler : MonoBehaviour, IDamageTaker
+public class HealthHandler : MonoBehaviour
 {
     private int _maxHealth = 100;
     private int _health = 100;

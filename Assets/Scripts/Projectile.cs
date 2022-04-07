@@ -9,8 +9,6 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected LayerMask _targetLayer = 0;
     [SerializeField] private LayerMask _environmentLayer = 0;
 
-    [HideInInspector]public Vector3 targetPosition;
-
     private Rigidbody _rigidbody;
     private Collider _collider;
 
@@ -22,9 +20,17 @@ public class Projectile : MonoBehaviour
         _collider = GetComponent<Collider>();
     }
 
-    public void Launch()
+    private void OnEnable()
     {
-        Vector3 velocity = Ballistik.CalculateBestThrowSpeed(transform.position, targetPosition, _projectileFlightDuration);
+        _collider.enabled = false;
+        _rigidbody.isKinematic = true;
+        _rigidbody.velocity = Vector3.zero;
+        _hasHit = true;
+    }
+
+    public void Launch(Vector3 shootPosition)
+    {
+        Vector3 velocity = Ballistik.CalculateBestThrowSpeed(transform.position, shootPosition, _projectileFlightDuration);
         Invoke(nameof(SelfDestroy), _lifetime);
         transform.parent = null;
         _collider.enabled = true;
@@ -41,10 +47,15 @@ public class Projectile : MonoBehaviour
         if ((1 << collider.gameObject.layer & _targetLayer) != 0)
         {
             HitToTarget(collider.gameObject);
+
+            collider.gameObject.AddComponent<PushMarker>();
         }
-        else if ((1 << collider.gameObject.layer & _environmentLayer) != 0)
+        else
         {
-            HitToEnvironment(collider.gameObject);
+            if ((1 << collider.gameObject.layer & _environmentLayer) != 0)
+            {
+                HitToEnvironment(collider.gameObject);
+            }
         }
     }
 
@@ -60,11 +71,7 @@ public class Projectile : MonoBehaviour
         if (target.TryGetComponent(out IDamageTaker damageTaker))
         {
             _hasHit = true;
-
-            if (damageTaker.TakeDamage(int.MaxValue) == false)
-            {
-                
-            }
+            damageTaker.TakeDamage(int.MaxValue);
         }
         else
         {
@@ -74,7 +81,8 @@ public class Projectile : MonoBehaviour
 
     private void SelfDestroy()
     {
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        GetComponent<PoolComponent>().ReturnToPool();
     }
 
 }

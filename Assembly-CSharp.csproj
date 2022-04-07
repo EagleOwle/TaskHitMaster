@@ -53,17 +53,26 @@
     <UnityVersion>2021.2.8f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\FollowTarget.cs" />
-    <Compile Include="Assets\Scripts\InputHandler.cs" />
-    <Compile Include="Assets\Scripts\Player.cs" />
-    <Compile Include="Assets\Scripts\PathFallow.cs" />
-    <Compile Include="Assets\Scripts\UnitState.cs" />
-    <Compile Include="Assets\Scripts\WayPoint.cs" />
-    <Compile Include="Assets\Scripts\Enemy.cs" />
-    <Compile Include="Assets\Scripts\IDamageTaker.cs" />
+    <Compile Include="Assets\Scripts\Path\WayPoint.cs" />
+    <Compile Include="Assets\Scripts\Unit\Player.cs" />
+    <Compile Include="Assets\Scripts\Unit\Enemy.cs" />
     <Compile Include="Assets\Scripts\HealthHandler.cs" />
+    <Compile Include="Assets\Scripts\Helper\Ballistik.cs" />
+    <Compile Include="Assets\Scripts\FollowTarget.cs" />
+    <Compile Include="Assets\Scripts\Path\PathFallow.cs" />
+    <Compile Include="Assets\Scripts\IDamageTaker.cs" />
+    <Compile Include="Assets\Scripts\Unit\UnitState.cs" />
     <Compile Include="Assets\Scripts\Projectile.cs" />
-    <Compile Include="Assets\Scripts\Ballistik.cs" />
+    <Compile Include="Assets\Scripts\InputHandler.cs" />
+    <Compile Include="Assets\Scripts\Path\Path.cs" />
+    <Compile Include="Assets\Scripts\Path\WeypointTask.cs" />
+    <Compile Include="Assets\Scripts\Path\TaskKiller.cs" />
+    <Compile Include="Assets\Scripts\Helper\AgentLinkMover.cs" />
+    <Compile Include="Assets\Scripts\DamageListener.cs" />
+    <Compile Include="Assets\Scripts\PushMarker.cs" />
+    <Compile Include="Assets\Scripts\Pool\Pool.cs" />
+    <Compile Include="Assets\Scripts\Pool\PoolInitializer.cs" />
+    <Compile Include="Assets\Scripts\Pool\PoolComponent.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
