@@ -45,7 +45,7 @@ public class PathFallow : MonoBehaviour
     private void Start()
     {
         currentPointIndex = -1;
-        Invoke(nameof(GoNext), 1);
+        Invoke(nameof(GoNext), 0.1f);
     }
 
     private void Update()
@@ -65,7 +65,7 @@ public class PathFallow : MonoBehaviour
     private void OnEventPlayerEndPoint()
     {
         //Debug.LogError("OnEventPlayerEndPoint");
-        Invoke(nameof(GoNext), 1);
+        Invoke(nameof(GoNext), 0.1f);
     }
 
     private void GoNext()

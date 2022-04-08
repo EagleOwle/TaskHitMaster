@@ -19,7 +19,8 @@ public class InputHandler : MonoBehaviour
     }
 
     public Action<Vector3> actionTupHit;
-
+    public Action actionTupScreen;
+    [SerializeField] private LayerMask enemyMask;
     private Vector3 _tupWorldPosition;
     private RaycastHit hit;
     private Ray ray;
@@ -28,10 +29,12 @@ public class InputHandler : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            actionTupScreen?.Invoke();
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, 100, enemyMask))
             {
+                Debug.DrawLine(Player.Instance.transform.position, hit.point, Color.red, 0.5f);
                 actionTupHit?.Invoke(hit.point);
             }
 

@@ -35,12 +35,16 @@ public class Player : MonoBehaviour
     private float _currentAttackCooldown;
     private Vector3 _shootTargetPosition;
     private List<Enemy> _enemys;
+    private HealthHandler _healthHandler;
+    private bool _isDead = false;
+    public bool IsDead => _isDead;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
+        _healthHandler = GetComponent<HealthHandler>();
     }
 
     private void OnEnable()
@@ -48,6 +52,8 @@ public class Player : MonoBehaviour
         GetComponent<PathFallow>().actionChangeFollowState += ChangeFollowState;
         InputHandler.Instance.actionTupHit += OnTupHit;
         _currentAttackCooldown = Time.time + _attackCooldown;
+        _healthHandler.ActionHealthChanged += OnHealthChanged;
+        _isDead = false;
     }
 
     private void ChangeFollowState(UnitState state)
@@ -83,8 +89,12 @@ public class Player : MonoBehaviour
 
         if (_currentUnitState != UnitState.Wait) return;
 
+        if (UIMenuManager.Instance.InMenu) return;
+
         _shootTargetPosition = worldPosition;
         _animator.SetTrigger("Throw");
+        _currentAttackCooldown = Time.time + _attackCooldown;
+        _navMeshAgent.isStopped = true;
     }
 
     private void FixedUpdate()
@@ -108,9 +118,11 @@ public class Player : MonoBehaviour
 
         if (_currentAttackCooldown <= Time.time)
         {
-            PoolComponent component = Pool.GetObject("Projectile", _armTransform.transform.position, Quaternion.identity);
+            PoolComponent component = Pool.GetObject("Projectile");
             _projectile = component.GetComponent<Projectile>();
             _projectile.transform.SetParent(_armTransform);
+            _projectile.transform.localPosition = Vector3.zero;
+            _projectile.transform.localRotation = Quaternion.identity;
         }
     }
 
@@ -128,10 +140,25 @@ public class Player : MonoBehaviour
     {
         _projectile.Launch(_shootTargetPosition);
         _projectile = null;
-        _currentAttackCooldown = Time.time + _attackCooldown;
-
     }
 
-    
+    private void ReadyForWalk()
+    {
+        _navMeshAgent.isStopped = false;
+    }
+
+    private void OnHealthChanged(float e)
+    {
+        if (e <= 0)
+        {
+            _animator.SetTrigger("Dead");
+            UIMenuManager.Instance.ShowLoosMenu();
+            _isDead = true;
+        }
+        else
+        {
+            _animator.SetTrigger("Hit");
+        }
+    }
 
 }

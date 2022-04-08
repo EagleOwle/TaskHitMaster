@@ -39,49 +39,51 @@ public class Projectile : MonoBehaviour
         _hasHit = false;
     }
 
-    private void OnTriggerEnter(Collider collider)
+    private void OnCollisionEnter(Collision collision)
     {
         if (_hasHit == true) return;
 
-        //Debug.LogError("OnTriggerEnter");
-        if ((1 << collider.gameObject.layer & _targetLayer) != 0)
+        if ((1 << collision.collider.gameObject.layer & _targetLayer) != 0)
         {
-            HitToTarget(collider.gameObject);
+            HitToTarget(collision.collider.gameObject);
 
-            collider.gameObject.AddComponent<PushMarker>();
+            collision.collider.gameObject.AddComponent<PushMarker>();
         }
         else
         {
-            if ((1 << collider.gameObject.layer & _environmentLayer) != 0)
+            if ((1 << collision.collider.gameObject.layer & _environmentLayer) != 0)
             {
-                HitToEnvironment(collider.gameObject);
+                HitToEnvironment(collision.collider.gameObject);
             }
         }
     }
 
     private void HitToEnvironment(GameObject target)
     {
-        
+        _hasHit = true;
+        SelfDestroy();
     }
 
     private void HitToTarget(GameObject target)
     {
         if (_hasHit == true) return;
 
+        _hasHit = true;
+
         if (target.TryGetComponent(out IDamageTaker damageTaker))
         {
-            _hasHit = true;
-            damageTaker.TakeDamage(int.MaxValue);
+            damageTaker.TakeDamage(100);
         }
-        else
-        {
-            Debug.LogError("Cant find IDamageTaker component on " + target.name);
-        }
+
+        SelfDestroy();
     }
+
+    
 
     private void SelfDestroy()
     {
         //Destroy(gameObject);
+        CancelInvoke(nameof(SelfDestroy));
         GetComponent<PoolComponent>().ReturnToPool();
     }
 

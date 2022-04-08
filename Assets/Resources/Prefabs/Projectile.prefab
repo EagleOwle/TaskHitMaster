@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1628819972297811144}
   - component: {fileID: 1628819972297811151}
   - component: {fileID: -8276053216262895976}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1628819972297811150}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
@@ -129,10 +129,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lifetime: 3
-  _projectileFlightDuration: 0.8
+  _projectileFlightDuration: 0.3
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 256
   _environmentLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -148,3 +148,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57de4affb81cb3d4e9fd2331272d5ded, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  poolName: 

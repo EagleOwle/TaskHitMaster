@@ -6,6 +6,9 @@ using UnityEngine.Events;
 
 public class DamageListener : MonoBehaviour, IDamageTaker
 {
+    public enum DamagePower { None, Part, Half, Max }
+    [SerializeField] private DamagePower damagePower;
+
     private HealthHandler _healthHandler;
 
     private void Awake()
@@ -20,6 +23,23 @@ public class DamageListener : MonoBehaviour, IDamageTaker
 
     bool IDamageTaker.TakeDamage(int damage)
     {
-       return _healthHandler.TakeDamage(damage);
+        if (_healthHandler == null) return false;
+
+        switch (damagePower)
+        {
+            case DamagePower.None:
+                break;
+            case DamagePower.Part:
+                damage = damage / 4;
+                break;
+            case DamagePower.Half:
+                damage = damage / 2;
+                break;
+            case DamagePower.Max:
+                break;
+        }
+
+        return _healthHandler.TakeDamage(damage);
     }
+
 }

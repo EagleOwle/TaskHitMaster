@@ -3,18 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class Enemy : MonoBehaviour
 {
     public Action<Enemy> actionIsDead;
 
     [SerializeField] private float _lookSpeed = 10;
-
+    [SerializeField] private Collider _baseCollider;
     private NavMeshAgent _navMeshAgent;
     private Animator _animator;
     private HealthHandler _healthHandler;
     private UnitState _currentUnitState;
-
     private Vector3 _lookTarget;
 
     private void Awake()
@@ -26,17 +26,21 @@ public class Enemy : MonoBehaviour
 
     private void OnEnable()
     {
-       _healthHandler.HealthChanged += OnHealthChanged;
+       _healthHandler.ActionHealthChanged += OnHealthChanged;
         DasableRagdoll();
     }
 
-    private void OnHealthChanged(object sender, float e)
+    private void OnHealthChanged(float e)
     {
+        _animator.SetTrigger("Hit");
+        _navMeshAgent.isStopped = true;
+
         if (e <= 0)
         {
             Destroy(_navMeshAgent);
             Destroy(_animator);
             Destroy(_healthHandler);
+            Destroy(_baseCollider);
             actionIsDead?.Invoke(this);
             EnableRagdoll();
             Destroy(this);
@@ -45,18 +49,24 @@ public class Enemy : MonoBehaviour
 
     private void OnDisable()
     {
-        GetComponent<HealthHandler>().HealthChanged -= OnHealthChanged;
+        GetComponent<HealthHandler>().ActionHealthChanged -= OnHealthChanged;
     }
 
     public void StartHunt()
     {
         _currentUnitState = UnitState.Move;
         _navMeshAgent.SetDestination(Player.Instance.transform.position);
+        gameObject.AddComponent<SceneIndicatorTarget>();
     }
 
     private void Update()
     {
         if(Player.Instance == null)
+        {
+            _currentUnitState = UnitState.None;
+        }
+
+        if (Player.Instance .IsDead)
         {
             _currentUnitState = UnitState.None;
         }
@@ -95,11 +105,16 @@ public class Enemy : MonoBehaviour
         _animator.SetFloat("Speed", _navMeshAgent.velocity.magnitude);
     }
 
+    private void ReadyForWalk()
+    {
+        _navMeshAgent.isStopped = false;
+    }
+
     private void OnThrow()
     {
-        if (Player.Instance.TryGetComponent(out IDamageTaker damageTaker))
+        if (Player.Instance.TryGetComponent(out HealthHandler _healthHandler))
         {
-            damageTaker.TakeDamage(int.MaxValue);
+            _healthHandler.TakeDamage(int.MaxValue);
         }
     }
 

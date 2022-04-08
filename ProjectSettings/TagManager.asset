@@ -11,13 +11,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Enemy
+  - Unit
   - Water
   - UI
   - Enviropment
   - Ragdoll
-  - 
-  - 
+  - DamageListener
+  - Projectile
   - 
   - 
   - 

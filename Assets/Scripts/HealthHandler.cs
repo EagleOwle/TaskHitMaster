@@ -8,7 +8,7 @@ public class HealthHandler : MonoBehaviour
     private int _maxHealth = 100;
     private int _health = 100;
 
-    public event EventHandler<float> HealthChanged;
+    public Action<float> ActionHealthChanged;
 
     public bool TakeDamage(int damage)
     {
@@ -18,19 +18,9 @@ public class HealthHandler : MonoBehaviour
         }
 
         _health -= damage;
-        HealthChanged?.Invoke(this, (float)_health / _maxHealth);
-
-        if(_health <= 0)
-        {
-            Invoke(nameof(Dead), Time.deltaTime);
-        }
+        ActionHealthChanged?.Invoke((float)_health / _maxHealth);
 
         return _health <= 0;
-    }
-
-    private void Dead()
-    {
-       // Destroy(gameObject);
     }
 
 }

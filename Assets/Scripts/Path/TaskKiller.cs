@@ -7,8 +7,6 @@ public class TaskKiller : WeypointTask
 {
     [SerializeField] private List<Enemy> enemys;
 
-    private Action _actionTaskOver;
-
     public override void ExecAction(Action actionTaskOver)
     {
         _actionTaskOver = actionTaskOver;

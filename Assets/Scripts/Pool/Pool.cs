@@ -87,6 +87,37 @@ public static class Pool
         return null;
     }
 
+    public static PoolComponent GetObject(string name)
+    {
+        if (pools == null) return null;
+
+        foreach (Part part in pools)
+        {
+            if (string.Compare(part.name, name) == 0)
+            {
+                foreach (PoolComponent comp in part.prefab)
+                {
+                    if (!comp.isActiveAndEnabled)
+                    {
+                        comp.gameObject.SetActive(true);
+                        return comp;
+                    }
+                }
+
+                if (part.resize)
+                {
+                    AutoResize(part, part.prefab.Count);
+
+                    PoolComponent comp = part.prefab[part.prefab.Count - 1];
+                    comp.gameObject.SetActive(true);
+                    return comp;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static void ReturnToPool(PoolComponent component)
     {
         foreach (Part part in pools)
